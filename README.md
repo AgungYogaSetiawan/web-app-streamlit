@@ -6,8 +6,9 @@
 Install library yang dibutuhkan
 
 Download requirements.txt
-
-https://github.com/AgungYogaSetiawan/web-app-streamlit/raw/main/requirement.txt
+```bash
+wget https://github.com/AgungYogaSetiawan/web-app-streamlit/raw/main/requirement.txt
+```
 
 Install library dengan pip
 ```bash
