@@ -18,4 +18,9 @@ Install library dengan pip
 Download dan unzip repo web-app-streamlit
 https://github.com/AgungYogaSetiawan/web-app-streamlit/archive/refs/heads/main.zip
 
+Terakhir, jalankan aplikasinya
+```bash
+streamlit run ml_app.py
+```
+
     
