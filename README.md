@@ -34,7 +34,7 @@ Bisa juga install satu persatu library yang dibutuhkan
 Download dan unzip repo web-app-streamlit
 https://github.com/AgungYogaSetiawan/web-app-streamlit/archive/refs/heads/main.zip
 
-Terakhir, jalankan aplikasinya
+Terakhir, jalankan aplikasinya di cmd
 ```bash
 streamlit run ml_app.py
 ```
