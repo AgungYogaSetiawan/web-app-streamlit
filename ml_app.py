@@ -3,9 +3,10 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_squared_error, r2_score, accuracy_score, confusion_matrix, classification_report
 from sklearn.datasets import load_iris, load_breast_cancer,load_wine
 
 # page layout menjadi wide
@@ -66,13 +67,17 @@ def build_model(df):
            Skor terbaik yang mungkin adalah 1,0 dan bisa negatif (karena modelnya bisa lebih buruk). Sebuah model konstan yang selalu memprediksi nilai yang diharapkan dari $R$, mengabaikan fitur input, akan mendapatkan skor 0,0.""")
   st.info(r2_score(y_train, y_pred_train))
   
-  st.write('Error MSE(Mean Squared Error) atau MAE(Mean Absolute Error)')
+  st.write('Accuracy Score Training Set')
   st.write("""
-  MSE pada dasarnya mengukur kesalahan kuadrat rata-rata dari prediksi kita. Untuk setiap poin, ia menghitung selisih kuadrat antara prediksi dan target kemudian merata-rata nilai-nilai itu.
-  Semakin tinggi nilai ini, semakin buruk modelnya. Nilai MSE tidak pernah negatif, karena kita menguadratkan kesalahan prediksi individu sebelum menjumlahkannya, tetapi akan menjadi nol untuk model yang sempurna.
-  Dalam MAE kesalahan dihitung sebagai rata-rata perbedaan absolut antara nilai target dan prediksi. MAE adalah skor linier yang berarti bahwa semua perbedaan individu diberi bobot yang sama rata-rata. Misalnya, perbedaan antara 10 dan 0 akan menjadi dua kali perbedaan antara 5 dan 0. 
+  Skor klasifikasi akurasi. Dalam klasifikasi multilabel, fungsi ini menghitung akurasi subset: kumpulan label yang diprediksi untuk sampel harus sama persis dengan kumpulan label yang sesuai di y_true.
   """)
-  st.info(mean_squared_error(y_train, y_pred_train))
+  st.info(accuracy_score(y_train, y_pred_train))
+  
+  st.write('Classification Report Training Set')
+  st.write("""
+  Buat laporan teks yang menunjukkan metrik klasifikasi utama. Pada kolom pertama adalah skor precision, kolom kedua adalah skor recall, kolom ketiga adalah kolom f1_score, dan kolom keempat adalah skor support
+  """)
+  st.info(classification_report(y_train, y_pred_train))
   st.markdown('---')
   
   st.markdown('**Testing Performance**')
@@ -82,16 +87,23 @@ def build_model(df):
            Skor terbaik yang mungkin adalah 1,0 dan bisa negatif (karena modelnya bisa lebih buruk). Sebuah model konstan yang selalu memprediksi nilai yang diharapkan dari $R$, mengabaikan fitur input, akan mendapatkan skor 0,0.""")
   st.info(r2_score(y_test, y_pred_test))
   
-  st.write('Error MSE(Mean Squared Error) atau MAE(Mean Absolute Error)')
+  st.write('Accuracy Score Testing Set')
   st.write("""
-  MSE pada dasarnya mengukur kesalahan kuadrat rata-rata dari prediksi kita. Untuk setiap poin, ia menghitung selisih kuadrat antara prediksi dan target kemudian merata-rata nilai-nilai itu.
-  Semakin tinggi nilai ini, semakin buruk modelnya. Nilai MSE tidak pernah negatif, karena kita menguadratkan kesalahan prediksi individu sebelum menjumlahkannya, tetapi akan menjadi nol untuk model yang sempurna.
-  Dalam MAE kesalahan dihitung sebagai rata-rata perbedaan absolut antara nilai target dan prediksi. MAE adalah skor linier yang berarti bahwa semua perbedaan individu diberi bobot yang sama rata-rata. Misalnya, perbedaan antara 10 dan 0 akan menjadi dua kali perbedaan antara 5 dan 0. 
+  Skor klasifikasi akurasi. Dalam klasifikasi multilabel, fungsi ini menghitung akurasi subset: kumpulan label yang diprediksi untuk sampel harus sama persis dengan kumpulan label yang sesuai di y_true.
   """)
-  st.info(mean_squared_error(y_test, y_pred_test))
+  st.info(accuracy_score(y_test, y_pred_test))
   
+  st.write('Classification Report Testing Set')
+  st.write("""
+  Buat laporan teks yang menunjukkan metrik klasifikasi utama. Pada kolom pertama adalah skor precision, kolom kedua adalah skor recall, kolom ketiga adalah kolom f1_score, dan kolom keempat adalah skor support
+  """)
+  st.info(classification_report(y_test, y_pred_test))
+  st.markdown('---')
   st.subheader('Model Parameters')
   st.write(lr.get_params())
+  # lin = np.linspace(0,7,1000)
+  # st.write('Hasil Prediksi dengan memasukkan data baru')
+  # st.write([])
   
   # bar plot
   st.write('Bar Plot Coefficient of determination ($R^2$)')
@@ -106,24 +118,26 @@ def build_model(df):
   
   # bar plot mae mse
   st.write('Bar Plot Error MSE(Mean Squared Error) atau MAE(Mean Absolute Error)')
-  skor2 = [float(mean_squared_error(y_train, y_pred_train)),float(mean_squared_error(y_test, y_pred_test))]
-  lab2 = ['mean_squared_error train','mean_squared_error test']
+  skor2 = [float(accuracy_score(y_train, y_pred_train)),float(accuracy_score(y_test, y_pred_test))]
+  lab2 = ['accuracy_score_train','accuracy_score_test']
   dt2 = pd.DataFrame(skor2,lab2)
   st.bar_chart(dt2,use_container_width=True)
   plt.ylabel('Score')
   plt.xlabel('Model')
-  plt.title('Error MSE(Mean Squared Error) atau MAE(Mean Absolute Error)')
+  plt.title('Accuracy Score')
   plt.show()
+  
+  
   
   
 # Halaman Utama
 st.write("""
 # Machine Learning Web App dengan Streamlit
 
-Web ML App ini menggunakan model algoritma `LinearRegression`. 
-`LinearRegression` adalah teknik regresi yang fungsinya untuk memisahkan dataset menjadi dua bagian (kelompok). Seperti kasus koin yang dilempar, hasilnya hanya ada dua yaitu depan atau belakang. Begitu pula dengan regresi logistik, maka hasilnya hanyalah ada dua, yaitu YES atau No, atau bisa juga 1 atau 0. Contoh lainnya adalah mengklasifikasikan apakah e-mail spam atau bukan spam, klasifikasi apakah customer akan membeli atau tidak membeli.
+Web ML App ini menggunakan model algoritma `LosgiticRegression`. 
+`LogisticRegression` adalah teknik regresi yang fungsinya untuk memisahkan dataset menjadi dua bagian (kelompok). Seperti kasus koin yang dilempar, hasilnya hanya ada dua yaitu depan atau belakang. Begitu pula dengan regresi logistik, maka hasilnya hanyalah ada dua, yaitu YES atau No, atau bisa juga 1 atau 0. Contoh lainnya adalah mengklasifikasikan apakah e-mail spam atau bukan spam, klasifikasi apakah customer akan membeli atau tidak membeli.
 
-Silahkan atur parameter untuk model `LinearRegression`.
+Silahkan atur parameter untuk model `LogistikRegression`.
 """)
 st.write("""---""")
 
@@ -204,13 +218,13 @@ Perhatikan bahwa bobot ini akan dikalikan dengan sample_weight (melewati metode 
 with st.sidebar.header('Upload CSV Data Hanya untuk Clasification'):
   uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
   st.sidebar.markdown("""
-[Stroke Prediction Dataset](https://github.com/AgungYogaSetiawan/Kumpulan-Latihan-Data-Science/raw/main/Datasets/stroke_predict_scale.csv)
+[Download Wine Dataset](https://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data)
 """)
 
 # Sidebar untuk mengatur parameter model
 with st.sidebar.header('Set Parameters Logistic Regression'):
   parameters_test_size = st.sidebar.slider('Data split ratio (for Training Set)', 10, 90, 80, 5)
-  parameters_penalty = st.sidebar.select_slider('Penalty (default="l2")',options=['l1','l2','elasticnet','none'])
+  parameters_penalty = st.sidebar.selectbox('Penalty (default="l2")',options=['l2','l1','elasticnet','none'])
   parameters_dual = st.sidebar.selectbox('Pilih Parameter Dual',(False,True))
   parameters_tol = st.sidebar.slider('Pilih Tolerance',0.0001)
   parameters_c = st.sidebar.slider('Pilih C',0.5,2.0,1.0)
@@ -242,6 +256,14 @@ else:
     df = pd.concat( [X,y], axis=1 )
     st.write('Memakai Dataset Iris')
     st.write(df.head())
+    
+    # # membuat user input untuk prediksi target names
+    # sl = st.number_input('Masukan angka untuk sepal length',min_value=0,max_value=30)
+    # sw = st.number_input('Masukan angka untuk sepal width',min_value=0,max_value=30)
+    # pl = st.number_input('Masukan angka untuk petal length',min_value=0,max_value=30)
+    # pw = st.number_input('Masukan angka untuk petal width',min_value=0,max_value=30)
+    # wrap = [sl,sw,pl,pw]
+    # st.info(X.predict(wrap))
     
     build_model(df)
   elif st.button('Demo Breast Cancer Dataset'):
